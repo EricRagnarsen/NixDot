@@ -1,8 +1,11 @@
 {
+	inputs,
 	variables,
+	config,
 	...
 }: {
 	imports = [
+		./hardware.nix
 		./modules/dnssec.nix
 		./modules/hyprland.nix
 	];
@@ -10,7 +13,6 @@
 		stateVersion = variables.system.version;
 	};
 	nixpkgs = {
-		system = variables.system.architecture;
 		config = {
 			allowUnfree = true;
 		};
@@ -53,7 +55,7 @@
 		};
 	};
 	networking = {
-		hostname = variables.system.hostname;
+		hostName = variables.system.hostname;
 		networkmanager = {
 			enable = true;
 		};
@@ -86,7 +88,7 @@
 	};
 	users = {
 		users = {
-			${users.administrator.name} = {
+			${variables.users.administrator.name} = {
 				isNormalUser = true;
 				initialPassword = variables.users.administrator.name;
 				extraGroups = [
@@ -105,7 +107,18 @@
 		extraSpecialArgs = {
 			inherit inputs;
 		};
-
+		users = {
+			${variables.users.administrator.name} = {
+				home = {
+					username = variables.users.administrator.name;
+					homeDirectory = "/home/${variables.users.administrator.name}";
+					imports = [
+						./home/administrator/home.nix
+						nixvim.homeManagerModules.nixvim
+					];
+				};
+			};
+		};
 	};
 	hyprland = {
 		enable = true;
@@ -118,7 +131,7 @@
 			};
 			alsa = {
 				enable = true;
-				support32Bit = true
+				support32Bit = true;
 			};
 			pulse = {
 				enable = true;
