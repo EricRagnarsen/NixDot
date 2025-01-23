@@ -1,10 +1,7 @@
 {
 	variables,
 	...
-}: let
-	system = import ./variables/system.nix
-	users = import ./variables/users.nix
-in {
+}: {
 	imports = [
 		./modules/dnssec.nix
 		./modules/hyprland.nix
@@ -13,6 +10,7 @@ in {
 		stateVersion = variables.system.version;
 	};
 	nixpkgs = {
+		system = variables.system.architecture;
 		config = {
 			allowUnfree = true;
 		};
@@ -55,6 +53,7 @@ in {
 		};
 	};
 	networking = {
+		hostname = variables.system.hostname;
 		networkmanager = {
 			enable = true;
 		};

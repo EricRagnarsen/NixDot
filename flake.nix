@@ -37,7 +37,9 @@
 	}: let
 		variables = {
 			system = {
+				architecture = "x86_64-linux";
 				version = "24.11";
+				hostname = "nixos";
 			};
 			users = {
 				administrator = {
@@ -49,7 +51,8 @@
 		};
 	in {
 		nixosConfigurations = {
-			nixos = nixpkgs.lib.nixosSystem {
+			${variables.system.hostname} = nixpkgs.lib.nixosSystem {
+				system = variables.system.architecture;
 				specialArgs = {
 					inherit inputs variables;
 				};
