@@ -87,6 +87,9 @@
 		};
 	};
 	users = {
+		groups = {
+			sudo = {};
+		};
 		users = {
 			${variables.users.administrator.name} = {
 				isNormalUser = true;
@@ -105,18 +108,18 @@
 		useGlobalPkgs = true;
 		useUserPackages = true;
 		extraSpecialArgs = {
-			inherit inputs;
+			inherit inputs variables;
 		};
 		users = {
 			${variables.users.administrator.name} = {
 				home = {
 					username = variables.users.administrator.name;
 					homeDirectory = "/home/${variables.users.administrator.name}";
-					imports = [
-						./home/administrator/home.nix
-						nixvim.homeManagerModules.nixvim
-					];
 				};
+				imports = [
+					./home/administrator/home.nix
+					inputs.nixvim.homeManagerModules.nixvim
+				];
 			};
 		};
 	};

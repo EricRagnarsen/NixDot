@@ -5,7 +5,7 @@
 	...
 }: {
 	options.hyprland = {
-		enable = lib.mkEnableOption "Hyprland";
+		enable = lib.mkEnableOption "Whether to enable Hyprland compositor";
 	};
 
 	config = lib.mkIf config.hyprland.enable {
@@ -30,11 +30,13 @@
 				};
 			};
 		};
-		xdg-portal = {
-			enable = true;
-			extraPortals = with pkgs; [
-				xdg-desktop-portal-gtk
-			];
+		xdg = {
+			portal = {
+				enable = true;
+				extraPortals = with pkgs; [
+					xdg-desktop-portal-gtk
+				];
+			};
 		};
 		programs = {
 			hyprland = {
@@ -55,6 +57,9 @@
 				gnome-calendar
 				gnome-weather
 				gnome-font-viewer
+				kitty
+				imv
+				mpv
 			];
 		};
 		services = {
@@ -129,7 +134,7 @@
 					};
 				};
 			};
-			tmp-files = {
+			tmpfiles = {
 				rules = [
 					"d '/var/cache/greeter' - greeter greeter - -"
 				];
