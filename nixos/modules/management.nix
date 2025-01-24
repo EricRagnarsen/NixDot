@@ -12,11 +12,12 @@
 		};
 		settings = {
 			users = lib.mkOption {
-				type = lib.types.attrsOf (lib.types.attrs {
-					privilege = lib.types.enum [ "administrator" "user" ];
-				});
-				default = {};
-				description = "Create a user with their privilege";
+				type = lib.types.attrsOf (lib.types.submodule ({
+					privilege = lib.mkOption {
+						type = lib.types.enum [ "administrator" "user" ];
+						default = "user";
+					};
+				}));
 			};
 		};
 	};
@@ -27,12 +28,12 @@
 				administrators = {};
 				users = {};
 			};
-			users = lib.genAttrs (lib.attrNames config.modules.management.settings.users) (name: {
+			users = lib.mapAttrs (name: cfg: {
 				isNormalUser = true;
 				initialPassword = name;
-				group = if config.modules.management.settings.users.${name}.privilege == "administrator" then "administrators" else "users";
-				extraGroups = if config.modules.management.settings.users.${name}.privilege == "administrator" then [ "networkmanager" "video" "audio" ] else [];
-			});
+				group = if cfg.privilege == "administrator" then "administrators" else "users";
+				extraGroups = if cfg.privilege == "administrator" then ["networkmanager" "video" "audio"] else [];
+			}) config.modules.management.settings.users;
 		};
 	};
 }
