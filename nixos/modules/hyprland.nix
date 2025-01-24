@@ -29,6 +29,9 @@
 					astal-auth = {};
 				};
 			};
+			rtkit = {
+				enable = true;
+			};
 		};
 		xdg = {
 			portal = {
@@ -57,6 +60,7 @@
 				gnome-calendar
 				gnome-weather
 				gnome-font-viewer
+				wl-clipboard
 				kitty
 				imv
 				mpv
@@ -106,6 +110,19 @@
 					enable = true;
 				};
 				localsearch = {
+					enable = true;
+				};
+			};
+			pipewire = {
+				enable = true;
+				wireplumber = {
+					enable = true;
+				};
+				alsa = {
+					enable = true;
+					support32Bit = true;
+				};
+				pulse = {
 					enable = true;
 				};
 			};

@@ -6,7 +6,6 @@
 }: {
 	imports = [
 		./hardware.nix
-		./modules/dnssec.nix
 		./modules/hyprland.nix
 	];
 	system = {
@@ -49,22 +48,17 @@
 			};
 		};
 	};
-	security = {
-		rtkit = {
-			enable = true;
-		};
-	};
 	networking = {
 		hostName = variables.system.hostname;
+		dhcpcd = {
+			enable = false;
+		};
 		networkmanager = {
 			enable = true;
 		};
 		firewall = {
 			enable = true;
 		};
-	};
-	dnssec = {
-		enable = true;
 	};
 	time = {
 		timeZone = "Asia/Bangkok";
@@ -125,20 +119,5 @@
 	};
 	hyprland = {
 		enable = true;
-	};
-	services = {
-		pipewire = {
-			enable = true;
-			wireplumber = {
-				enable = true;
-			};
-			alsa = {
-				enable = true;
-				support32Bit = true;
-			};
-			pulse = {
-				enable = true;
-			};
-		};
 	};
 }
