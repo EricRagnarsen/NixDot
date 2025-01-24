@@ -6,9 +6,11 @@
 }: {
 	imports = [
 		./scan/hardware.nix
+		./modules/boot.nix
 		./modules/graphic.nix
 		./modules/networking.nix
-		./modules/boot.nix
+		./modules/management.nix
+		./modules/security.nix
 		./modules/hyprland.nix
 	];
 	system = {
@@ -30,82 +32,6 @@
 			enable = false;
 		};
 	};
-	hardware = {
-		graphic = {
-			enable = true;
-			enable32Bit = true;
-		};
-		nvidia = {
-			package = config.boot.kernelPackages.nvidiaPackages.stable;
-			open = false;
-			modesetting = {
-				enable = true;
-			};
-			prime = {
-				amdgpuBusId = "PCI:0:2:0";
-				nvidiaBusId = "PCI:14:0:0";
-			};
-		};
-		bluetooth = {
-			enable = true;
-			powerOnBoot = false;
-			settings = {
-				General = {
-					Experimental = true;
-				};
-			};
-		};
-	};
-	networking = {
-		hostName = variables.system.hostname;
-		dhcpcd = {
-			enable = false;
-		};
-		networkmanager = {
-			enable = true;
-		};
-		firewall = {
-			enable = true;
-		};
-	};
-	time = {
-		timeZone = "Asia/Bangkok";
-	};
-	i18n = {
-		defaultLocale = "en_US.UTF-8";
-	};
-	boot = {
-		loader = {
-			efi = {
-				canTouchEfiVariables = true;
-			};
-			systemd-boot = {
-				enable = true;
-			};
-			timeout = 5;
-		};
-		tmp = {
-			cleanOnBoot = true;
-		};
-	};
-	users = {
-		groups = {
-			sudo = {};
-		};
-		users = {
-			${variables.users.administrator.name} = {
-				isNormalUser = true;
-				initialPassword = variables.users.administrator.name;
-				extraGroups = [
-					"sudo"
-					"networkmanager"
-					"video"
-					"audio"
-					"libvirtd"
-				];
-			};
-		};
-	};
 	home-manager = {
 		useGlobalPkgs = true;
 		useUserPackages = true;
@@ -125,14 +51,47 @@
 			};
 		};
 	};
-	hyprland = {
-		enable = true;
-	};
-	services = {
-		xserver = {
-			videoDrivers = [
-				"nvidia"
-			];
+	modules = {
+		boot = {
+			enable = true;
+			settings = {
+				mode = "uefi";
+				loader = "systemd";
+			};
+		};
+		graphic = {
+			enable = true;
+			settings = {
+				gpu = "nvidia";
+				prime = {
+					busId = {
+						nvidia = "PCI:14:0:0";
+						amd = "PCI:0:2:0";
+					};
+				};
+			};
+		};
+		networking = {
+			enable = true;
+			settings = {
+				hostname = variables.system.hostname;
+				timezone = "Asia/Bangkok";
+				locale = "en_US.UTF-8";
+			};
+		};
+		management = {
+			enable = true;
+			settings = {
+				administrators = [
+					variables.users.administrator.name
+				];
+			};
+		};
+		security = {
+			enable = true;
+		};
+		hyprland = {
+			enable = true;
 		};
 	};
 }

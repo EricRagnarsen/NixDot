@@ -4,13 +4,19 @@
 	lib,
 	...
 }: let
-	busId = lib.types.strMatching "([[:print:]]+[:@][0-9]{1,3}:[0-9]{1,2}:[0-9])?";
+	types = {
+		busId = lib.types.strMatching "([[:print:]]+[:@][0-9]{1,3}:[0-9]{1,2}:[0-9])?";
+	};
 in {
-	options.graphic = {
-		enable = lib.mkEnableOption "Whether to enable graphic module";
+	options.modules.graphic = {
+		enable = lib.mkOption {
+			type = lib.types.bool;
+			default = false;
+			description = "Whether to enable graphic module or not";
+		};
 		settings = {
 			gpu = lib.mkOption {
-				type = lib.types.enum [ "nvidia" "amd" "intel" "generic" ];
+				type = lib.types.enum ["nvidia" "amd" "intel" "generic"];
 				default = "generic";
 				description = "Select the GPU";
 			};
@@ -18,17 +24,17 @@ in {
 				prime = {
 					busId = {
 						nvidia = lib.mkOption {
-							type = busId;
+							type = types.busId;
 							default = "";
 							description = "Bus ID of the NVIDIA GPU";
 						};
 						amd = lib.mkOption {
-							type = busId;
+							type = types.busId;
 							default = "";
 							description = "Bus ID of the AMD GPU";
 						};
 						intel = lib.mkOption {
-							type = busId;
+							type = types.busId;
 							default = "";
 							description = "Bus ID of the Intel GPU";
 						};
@@ -38,53 +44,46 @@ in {
 		};
 	};
 
-	config = lib.mkIf config.graphic.enable {
+	config = lib.mkIf config.modules.graphic.enable {
 		hardware = {
 			graphic = {
 				enable = true;
 				enable32Bit = true;
 			};
+			extraPackages = pkgs.lib.optionals (config.modules.graphic.settings.gpu == "amd") [pkgs.rocmPackages.clr.icd]
+			++ pkgs.lib.optionals (config.modules.graphic.settings.gpu == "intel") [pkgs.vpl-gpu-rt];
 		};
-		(lib.mkMerge [
-			(lib.mkIf config.graphic.settings.gpu == "nvidia" {
-      			nvidia = {
-					package = config.boot.kernelPackages.nvidiaPackages.stable;
-					open = false;
-					modesetting = {
-						enable = true;
-					};
-					prime = {
-						nvidiaBusId = config.graphic.settings.nvidia.prime.busId.nvidia;
-						amdgpuBusId = config.graphic.settings.nvidia.prime.busId.amd;
-						intelBusId = config.graphic.settings.nvidia.prime.busId.intel;
-					};
-				};
-				services = {
-					xserver = {
-						videoDrivers = [
-							"nvidia"
-						];
-					};
-				};
-    		})
-    		(lib.mkIf config.graphic.settings.gpu == "amd" {
-      			hardware = {
-					graphic = {
-						extraPackages = with pkgs; [
-							rocmPackages.clr.icd
-						];
-					};
-				};
-    		})
-    		(lib.mkIf config.graphic.settings.gpu == "intel" {
-      			hardware = {
-					graphic = {
-						extraPackages = with pkgs; [
-							vpl-gpu-rt
-						];
-					};
-				};
-    		})
-		])
+		nvidia = lib.mkIf (config.modules.graphic.settings.gpu == "nvidia") {
+			package = config.boot.kernelPackages.nvidiaPackages.stable;
+			open = false;
+			modesetting = {
+				enable = true;
+			};
+			prime = {
+				nvidiaBusId = config.modules.graphic.settings.nvidia.prime.busId.nvidia;
+				amdgpuBusId = config.modules.graphic.settings.nvidia.prime.busId.amd;
+				intelBusId = config.modules.graphic.settings.nvidia.prime.busId.intel;
+			};
+		};
+		services = {
+			xserver = {
+				enable = true;
+				videoDrivers = pkgs.lib.optionals (config.modules.graphic.settings.gpu == "nvidia") ["nvidia"];
+			};
+		};
+		assertions = [
+			{
+				assertion = !(config.modules.graphic.settings.nvidia.prime.busId.nvidia != "" && config.modules.graphic.settings.nvidia.prime.busId.amd == "" && config.modules.graphic.settings.nvidia.prime.busId.intel == "");
+				message = "NVIDIA bus ID cannot be set without either "amd" or "intel" bus ID being set";
+			}
+			{
+				assertion = !(config.modules.graphic.settings.nvidia.prime.busId.nvidia == "" && (config.modules.graphic.settings.nvidia.prime.busId.amd != "" || config.modules.graphic.settings.nvidia.prime.busId.intel != ""));
+				message = "You cannot set "amd" or "intel" bus ID without setting an NVIDIA bus ID";
+			}
+			{
+				assertion = !(config.modules.graphic.settings.nvidia.prime.busId.amd != "" && config.modules.graphic.settings.nvidia.prime.busId.intel != "");
+				message = "You can only set one of "amd" or "intel" bus ID when using NVIDIA Prime";
+			}
+		];
 	};
 }

@@ -6,7 +6,11 @@
 	...
 }: {
 	options.hyprland = {
-		enable = lib.mkEnableOption "Whether to enable Hyprland compositor";
+		enable = lib.mkOption {
+			type = lib.types.bool;
+			default = false;
+			description = "Whether to enable Hyprland compositor or not";
+		};
 	};
 
 	config = lib.mkIf config.hyprland.enable {
@@ -16,22 +20,6 @@
 				trusted-public-keys = [
 					"hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
 				];
-			};
-		};
-		security = {
-			polkit = {
-				enable = true;
-				adminIdentities = [
-					"unix-group:sudo"
-				];
-			};
-			pam = {
-				services = {
-					astal-auth = {};
-				};
-			};
-			rtkit = {
-				enable = true;
 			};
 		};
 		xdg = {
@@ -71,7 +59,13 @@
 				kitty
 				imv
 				mpv
+				firefox
 			];
+		};
+		security = {
+			rtkit = {
+				enable = true;
+			};
 		};
 		services = {
 			greetd = {
