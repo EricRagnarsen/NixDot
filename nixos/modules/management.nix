@@ -11,46 +11,28 @@
 			description = "Whether to enable management module or not";
 		};
 		settings = {
-			administrators = lib.mkOption {
-				type = lib.types.listOf lib.types.str;
-				default = [];
-				description = "Users who have administrator privilege";
-			};
 			users = lib.mkOption {
-				type = lib.types.listOf lib.types.str;
-				default = [];
-				description = "Users who have regular privilege";
+				type = lib.types.attrsOf (lib.types.attrs {
+					privilege = lib.types.enum [ "administrator" "user" ];
+				});
+				default = {};
+				description = "Create a user with their privilege";
 			};
 		};
 	};
 
 	config = lib.mkIf config.modules.management.enable {
-		users = lib.mkMerge [
-			{
-				groups = {
-					administrators = {};
-					users = {};
-				};
-			}
-	      	(lib.mkIf (config.modules.management.settings.administrators != []) {
-				users = lib.lists.map (admin: {
-					group = "administrators";
-					isNormalUser = true;
-					initialPassword = "${admin}";
-					extraGroups = [
-						"networkmanager"
-						"video"
-						"audio"
-					];
-				}) config.modules.management.settings.administrators;
-			})
-			(lib.mkIf (config.modules.management.settings.users != []) {
-				users = lib.lists.map (user: {
-					group = "users";
-					isNormalUser = true;
-					initialPassword = "${user}";
-				}) config.modules.management.settings.users;
-			})
-    	];
+		users = {
+			groups = {
+				administrators = {};
+				users = {};
+			};
+			users = lib.genAttrs (lib.attrNames config.modules.management.settings.users) (name: {
+				isNormalUser = true;
+				initialPassword = name;
+				group = if config.modules.management.settings.users.${name}.privilege == "administrator" then "administrators" else "users";
+				extraGroups = if config.modules.management.settings.users.${name}.privilege == "administrator" then [ "networkmanager" "video" "audio" ] else [];
+			});
+		};
 	};
 }

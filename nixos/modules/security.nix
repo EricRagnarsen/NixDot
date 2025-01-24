@@ -19,7 +19,7 @@
 					{
 						groups = [
 							"administrators"
-						]
+						];
 						commands = [
 							"ALL"
 						];

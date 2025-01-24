@@ -82,9 +82,11 @@
 		management = {
 			enable = true;
 			settings = {
-				administrators = [
-					variables.users.administrator.name
-				];
+				users = {
+					${variables.users.administrator.name} = {
+						privilege = "administrator";
+					};
+				};
 			};
 		};
 		security = {
