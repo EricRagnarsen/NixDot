@@ -5,7 +5,10 @@
 	...
 }: {
 	imports = [
-		./hardware.nix
+		./scan/hardware.nix
+		./modules/graphic.nix
+		./modules/networking.nix
+		./modules/boot.nix
 		./modules/hyprland.nix
 	];
 	system = {
@@ -28,8 +31,13 @@
 		};
 	};
 	hardware = {
+		graphic = {
+			enable = true;
+			enable32Bit = true;
+		};
 		nvidia = {
 			package = config.boot.kernelPackages.nvidiaPackages.stable;
+			open = false;
 			modesetting = {
 				enable = true;
 			};
@@ -119,5 +127,12 @@
 	};
 	hyprland = {
 		enable = true;
+	};
+	services = {
+		xserver = {
+			videoDrivers = [
+				"nvidia"
+			];
+		};
 	};
 }

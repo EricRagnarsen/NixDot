@@ -1,9 +1,21 @@
 {
+	pkgs,
 	...
 }: {
 	programs = {
 		nixvim = {
 			enable = true;
+			globals = {
+				mapleader = " ";
+			};
+			opts = {
+				number = true;
+				cursorline = true;
+				expandtab = true;
+				tabstop = 4;
+				shiftwidth = 4;
+				clipboard = "unnamedplus";
+			};
 			clipboard = {
 				providers = {
 					wl-copy = {
@@ -14,9 +26,6 @@
 			colorschemes = {
 				nord = {
 					enable = true;
-					lazyload = {
-						enable = true;
-					};
 				};
 			};
 			keymaps = [
@@ -34,30 +43,100 @@
 			plugins = {
 				auto-save = {
 					enable = true;
-				};
-				auto-close = {
-					enable = true;
-					keys = {
-						"{" = { escape = false; close = true; pair = "{}"; };
-						"[" = { escape = false; close = true; pair = "[]"; };
-						"(" = { escape = false; close = true; pair = "()"; };
-						"<" = { escape = false; close = true; pair = "<>"; };
-						'"' = { escape = false; close = true; pair = '""'; };
-						"'" = { escape = false; close = true; pair = "''"; };
-						"`" = { escape = false; close = true; pair = "``"; };
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"InsertLeave"
+								"TextChanged"
+							];
+						};
 					};
 				};
 				blink-cmp = {
 					enable = true;
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"InsertEnter"
+							];
+						};
+					};
 					settings = {
-						"lsp"
-						"snippets"
-						"path"
-						"buffer"
+						sources = {
+							default = [
+								"lsp"
+								"snippets"
+								"path"
+								"buffer"
+							];
+						};
+						providers = {
+							ripgrep = {
+								name = "Ripgrep";
+								module = "blink-ripgrep";
+								score_offset = 1;
+							};
+						};
+						signature = {
+							enabled = true;
+						};
+						keymap = {
+							"<C-Up>" = [
+								"select_prev"
+							];
+							"<C-Down>" = [
+								"select_next"
+							];
+							"<C-Left>" = [
+								"scroll_documentation_up"
+							];
+							"<C-Right>" = [
+								"scroll_documentation_down"
+							];
+							"<C-m>" = [
+								"show"
+								"hide"
+							];
+							"<C-d>" = [
+								"show_documentation"
+								"hide_documentation"
+							];
+							"<C-CR>" = [
+								"select_and_accept"
+							];
+						};
+						appearance = {
+							nerd_font_variant = "mono";
+						};
+						completion = {
+							menu = {
+								border = "rounded"
+								draw = {
+									gap = 2;
+								};
+							};
+							documentation = {
+								auto_show = true,
+								auto_show_delay_ms = 300,
+								window = {
+									border = "rounded";
+								};
+							};
+						};
 					};
 				};
 				comment = {
 					enable = true;
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"BufEnter"
+							];
+						};
+					};
 					settings = {
 						mappings = {
 							basic = true;
@@ -75,6 +154,15 @@
 				};
 				conform-nvim = {
 					enable = true;
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"InsertLeave"
+								"TextChanged"
+							];
+						};
+					};
 					settings = {
 						formatters_by_ft = {
 							bash = [
@@ -87,26 +175,26 @@
 								"black"
 							];
 							javascript = [
-								"prettierd";
+								"prettierd"
 							];
 							typescript = [
-								"prettierd";
+								"prettierd"
 							];
 							javascriptreact = [
-								"prettierd";
+								"prettierd"
 							];
 							typescriptreact = [
-								"prettierd";
+								"prettierd"
 							];
 							css = [
-								"prettierd";
+								"prettierd"
 							];
 							scss = [
-								"prettierd";
+								"prettierd"
 							];
 							"*" = [
 								"codespell"
-							],
+							];
 							"_" = [
 								"squeeze_blanks"
 								"trim_whitespace"
@@ -119,22 +207,33 @@
 						};
 					};
 				};
-				inc-rename = {
-					enable = true;
-				};
 				lsp = {
 					enable = true;
-					capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities);
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"BufReadPre"
+								"BufNewFile"
+							];
+						};
+					};
+					capabilities =
+					''
+						capabilities = vim.tbl_deep_extend('force', capabilities, require('blink.cmp').get_lsp_capabilities())
+					''
 					inlayHints = true;
-					onAttach = function(client, bufnr)
-        				local opts = {
-        					noremap = true,
-        					silent = true
-        					buffer = bufnr
-        				}
-        				vim.keymap.set("n", "<leader>gd", vim.lsp.buf.declaration, opts)
-        				vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-					end,
+					keymaps = {
+						silent = true;
+						lspBuf = {
+							"<leader>gr" = "references";
+							"<leader>gd" = "definition";
+							"<leader>gi" = "implementation";
+							"<leader>gt" = "type_definition";
+							"<leader>hc" = "hover";
+							"<leader>rc" = "rename";
+						};
+					};
 					servers = {
 						bashls = {
 							enable = true;
@@ -155,17 +254,55 @@
 				};
 				lsp-lines = {
 					enable = true;
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"LspAttach"
+							];
+						};
+					};
 				}; 
 				lsp-signature = {
 					enable = true;
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"LspAttach"
+							];
+						};
+					};
 				};
 				lualine = {
 					enable = true;
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"VimEnter"
+							];
+						};
+					};
+					settings = {
+						globalstatus = true;
+					};
 				};
 				treesitter = {
 					enable = true;
+					lazyLoad = {
+						enable = true;
+						settings = {
+							event = [
+								"BufRead"
+							];
+						};
+					};
 				};
 			};
+			extraPlugins = with pkgs; [
+				blink-ripgrep-nvim
+			];
 		};
 	};
 }

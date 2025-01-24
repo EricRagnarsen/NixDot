@@ -43,9 +43,11 @@
 			};
 			users = {
 				administrator = {
-					username = "ericragnarsen";
 					name = "eric";
-					email = "ericragnarsen@gmail.com";
+					git = {
+						email = "ericragnarsen@gmail.com";
+						username = "EricRagnarsen";
+					};
 				};
 			};
 		};

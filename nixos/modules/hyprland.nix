@@ -1,4 +1,5 @@
 {
+	inputs,
 	pkgs,
 	config,
 	lib,
@@ -44,6 +45,8 @@
 		programs = {
 			hyprland = {
 				enable = true;
+				package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+				portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
 				xwayland = {
 					enable = true;
 				};
@@ -51,6 +54,10 @@
 		};
 		environment = {
 			systemPackages = with pkgs; [
+				noto-fonts
+				noto-fonts-cjk-sans
+				noto-fonts-color-emoji
+				nerd-fonts.fira-code
 				gnome-control-center
 				mission-center
 				nautilus
