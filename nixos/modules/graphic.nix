@@ -74,15 +74,15 @@ in {
 		assertions = [
 			{
 				assertion = !(config.modules.graphic.settings.nvidia.prime.busId.nvidia != "" && config.modules.graphic.settings.nvidia.prime.busId.amd == "" && config.modules.graphic.settings.nvidia.prime.busId.intel == "");
-				message = "NVIDIA bus ID cannot be set without either "amd" or "intel" bus ID being set";
+				message = "NVIDIA bus ID cannot be set without either AMD or Intel bus ID being set";
 			}
 			{
 				assertion = !(config.modules.graphic.settings.nvidia.prime.busId.nvidia == "" && (config.modules.graphic.settings.nvidia.prime.busId.amd != "" || config.modules.graphic.settings.nvidia.prime.busId.intel != ""));
-				message = "You cannot set "amd" or "intel" bus ID without setting an NVIDIA bus ID";
+				message = "You cannot set AMD or Intel bus ID without setting an NVIDIA bus ID";
 			}
 			{
 				assertion = !(config.modules.graphic.settings.nvidia.prime.busId.amd != "" && config.modules.graphic.settings.nvidia.prime.busId.intel != "");
-				message = "You can only set one of "amd" or "intel" bus ID when using NVIDIA Prime";
+				message = "You can only set one of AMD or Intel bus ID when using NVIDIA Prime";
 			}
 		];
 	};
