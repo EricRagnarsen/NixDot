@@ -30,10 +30,10 @@
 				groups = {
 					administrators = {};
 					users = {};
-				;
+				};
 			}
 	      	(lib.mkIf (config.modules.management.settings.administrators != []) {
-				users = lib.lists.mapAttrs (name: _) (lib.lists.map (admin: {
+				users = lib.lists.map (admin: {
 					group = "administrators";
 					isNormalUser = true;
 					initialPassword = "${admin}";
@@ -41,15 +41,15 @@
 						"networkmanager"
 						"video"
 						"audio"
-					];	
-	        	}) config.modules.management.settings.administrators);
+					];
+				}) config.modules.management.settings.administrators;
 			})
 			(lib.mkIf (config.modules.management.settings.users != []) {
-				users = lib.lists.mapAttrs (name: _) (lib.lists.map (user: {
+				users = lib.lists.map (user: {
 					group = "users";
 					isNormalUser = true;
 					initialPassword = "${user}";
-				}) config.modules.management.settings.users);
+				}) config.modules.management.settings.users;
 			})
     	];
 	};
