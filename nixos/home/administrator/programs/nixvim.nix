@@ -112,14 +112,14 @@
 						};
 						completion = {
 							menu = {
-								border = "rounded"
+								border = "rounded";
 								draw = {
 									gap = 2;
 								};
 							};
 							documentation = {
-								auto_show = true,
-								auto_show_delay_ms = 300,
+								auto_show = true;
+								auto_show_delay_ms = 300;
 								window = {
 									border = "rounded";
 								};
@@ -219,9 +219,10 @@
 						};
 					};
 					capabilities =
-					''
-						capabilities = vim.tbl_deep_extend('force', capabilities, require('blink.cmp').get_lsp_capabilities())
-					''
+						''
+							capabilities = vim.tbl_deep_extend('force', capabilities, require('blink.cmp').get_lsp_capabilities())
+						''
+					;
 					inlayHints = true;
 					keymaps = {
 						silent = true;
@@ -288,6 +289,9 @@
 						globalstatus = true;
 					};
 				};
+				lz-n = {
+					enable = true;
+				};
 				treesitter = {
 					enable = true;
 					lazyLoad = {
@@ -300,7 +304,7 @@
 					};
 				};
 			};
-			extraPlugins = with pkgs; [
+			extraPlugins = with pkgs.vimPlugins; [
 				blink-ripgrep-nvim
 			];
 		};

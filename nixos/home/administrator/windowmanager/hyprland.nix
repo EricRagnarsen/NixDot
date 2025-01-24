@@ -1,5 +1,6 @@
 {
 	inputs,
+	pkgs,
 	...
 }: {
 	wayland = {
@@ -23,7 +24,7 @@
 						border_size = 2;
 						col.active_border = "rgb(81a1c1)";
 						col.inactive_border = "rgb(2e3440)";
-						layout = dwindle;
+						layout = "dwindle";
 					};
 					decoration = {
 						rounding = 10;
@@ -36,9 +37,9 @@
 						};
 						blur = {
 							enabled = true;
-							size = 3
-							passes = 1
-							vibrancy = 0.1696
+							size = 3;
+							passes = 1;
+							vibrancy = 0.1696;
 						};
 						misc = {
 							disable_hyprland_logo = true;

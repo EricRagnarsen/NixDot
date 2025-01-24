@@ -7,7 +7,7 @@
 	imports = [
 		./scan/hardware.nix
 		./modules/boot.nix
-		./modules/graphic.nix
+		./modules/graphics.nix
 		./modules/networking.nix
 		./modules/management.nix
 		./modules/security.nix
@@ -59,7 +59,7 @@
 				loader = "systemd";
 			};
 		};
-		graphic = {
+		graphics = {
 			enable = true;
 			settings = {
 				gpu = "nvidia";

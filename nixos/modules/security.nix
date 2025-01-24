@@ -14,10 +14,22 @@
 
 	config = lib.mkIf config.modules.security.enable {
 		security = {
+			sudo = {
+				extraRules = [
+					{
+						groups = [
+							"administrators"
+						]
+						commands = [
+							"ALL"
+						];
+					}
+				];
+			};
 			polkit = {
 				enable = true;
 				adminIdentities = [
-					"unix-group:sudo"
+					"unix-group:administrators"
 				];
 			};
 		};

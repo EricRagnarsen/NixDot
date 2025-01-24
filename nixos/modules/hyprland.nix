@@ -5,7 +5,7 @@
 	lib,
 	...
 }: {
-	options.hyprland = {
+	options.modules.hyprland = {
 		enable = lib.mkOption {
 			type = lib.types.bool;
 			default = false;
@@ -13,7 +13,7 @@
 		};
 	};
 
-	config = lib.mkIf config.hyprland.enable {
+	config = lib.mkIf config.modules.hyprland.enable {
 		nix = {
 			settings = {
 				substituters = ["https://hyprland.cachix.org"];

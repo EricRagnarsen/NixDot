@@ -5,8 +5,9 @@
 	...
 }: let
 	types = {
+		nospace = str: lib.filter (c: c == " ") (lib.stringToCharacters str) == [ ];
 		hostname = lib.types.strMatching"^$|^[[:alnum:]]([[:alnum:]_-]{0,61}[[:alnum:]])?$";
-		timezone = lib.types.nullOr (lib.types.addCheck lib.types.str nospace);
+		timezone = lib.types.nullOr (lib.types.addCheck lib.types.str types.nospace);
 	};
 in {
 	options.modules.networking = {
@@ -36,7 +37,7 @@ in {
 
 	config = lib.mkIf config.modules.networking.enable {
 		networking = {
-			hostname = config.modules.networking.settings.hostname;
+			hostName = config.modules.networking.settings.hostname;
 			dhcpcd = {
 				enable = false;
 			};
