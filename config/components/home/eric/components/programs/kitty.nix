@@ -1,4 +1,5 @@
 {
+	pkgs,
 	...
 }: {
 	programs = {
@@ -7,11 +8,12 @@
 			theme = "Nord";
 			font = {
 				name = "FiraCode Nerd Font";
-				size = 10;
+				package = pkgs.nerd-fonts.fira-code;
+				size = 11;
 			};
 			settings = {
 				window_padding_width = 10;
-				backgroup_opacity = 0.9;
+				background_opacity = 0.9;
 			};
 		};
 	};

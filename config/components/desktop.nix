@@ -1,20 +1,7 @@
 {
-	inputs,
-	pkgs,
-	config,
-	lib,
 	...
 }: {
-	options.modules.hyprland = {
-		enable = lib.mkOption {
-			type = lib.types.bool;
-			default = false;
-			description = "Whether to enable Hyprland compositor or not";
-		};
-	};
-
-	config = lib.mkIf config.modules.hyprland.enable {
-		nix = {
+	nix = {
 			settings = {
 				substituters = ["https://hyprland.cachix.org"];
 				trusted-public-keys = [
@@ -31,6 +18,16 @@
 			};
 		};
 		programs = {
+			uwsm = {
+				enable = true;
+				waylandCompositors = {
+					hyprland = {
+						prettyName = "Hyprland";
+						comment = "Hyprland compositor";
+						binPath = "/run/current-system/sw/bin/Hyprland";
+					};
+				};
+			};
 			hyprland = {
 				enable = true;
 				package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -38,6 +35,7 @@
 				xwayland = {
 					enable = true;
 				};
+				withUWSM = true;
 			};
 		};
 		environment = {
@@ -46,15 +44,9 @@
 				noto-fonts-cjk-sans
 				noto-fonts-color-emoji
 				nerd-fonts.fira-code
-				gnome-control-center
 				mission-center
 				nautilus
 				nautilus-open-any-terminal
-				baobab
-				gnome-clocks
-				gnome-calendar
-				gnome-weather
-				gnome-font-viewer
 				wl-clipboard
 				kitty
 				imv
@@ -68,14 +60,6 @@
 			};
 		};
 		services = {
-			greetd = {
-				enable = true;
-				settings = {
-					default_session = {
-						command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
-					};
-				};
-			};
 			upower = {
 				enable = true;
 			};
@@ -87,32 +71,6 @@
 			};
 			udisks2 = {
 				enable = true;
-			};
-			devmon = {
-				enable = true;
-			};
-			accounts-daemon = {
-				enable = true;
-			};
-			gnome = {
-				evolution-data-server = {
-					enable = true;
-				};
-				glib-networking = {
-					enable = true;
-				};
-				gnome-keyring = {
-					enable = true;
-				};
-				gnome-online-accounts = {
-					enable = true;
-				};
-				tinysparql = {
-					enable = true;
-				};
-				localsearch = {
-					enable = true;
-				};
 			};
 			pipewire = {
 				enable = true;
@@ -151,11 +109,6 @@
 						};
 					};
 				};
-			};
-			tmpfiles = {
-				rules = [
-					"d '/var/cache/greeter' - greeter greeter - -"
-				];
 			};
 		};
 	};

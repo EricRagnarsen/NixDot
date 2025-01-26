@@ -1,19 +1,68 @@
 {
 	inputs,
 	pkgs,
+	lib,
 	...
 }: {
+	gtk = {
+		enable = true;
+		theme = {
+			name = "Colloid-Dark-Nord";
+			package = pkgs.colloid-gtk-theme.override {
+				themeVariants = [
+					"default"
+				];
+				colorVariants = [
+					"standard"
+				];
+				sizeVariants = [
+					"standard"
+				];
+				tweaks = [
+					"nord"
+				];
+			};
+		};
+		iconTheme = {
+			name = "Colloid-Nord-Dark";
+			package = pkgs.colloid-icon-theme.override {
+				schemeVariants = [
+					"nord"
+				];
+				colorVariants = [
+					"default"
+				];
+			};
+		};
+		cursorTheme = {
+			name = "Nordzy-cursors";
+			package = pkgs.nordzy-cursor-theme;
+		};
+		font = {
+			name = "FiraCode Nerd Font";
+			package = pkgs.nerd-fonts.fira-code;
+			size = 10;
+		};
+	};
+	qt = {
+		enable = true;
+		platformTheme = "qtct";
+		style = {
+			name = "kvantum";
+		};
+	};
 	wayland = {
 		windowManager = {
 			hyprland = {
 				enable = true;
 				package = inputs.hyprland.packages.${pkgs.system}.default;
-				settings = let
-					leader = "super";
-				in {
-					exec-once = [
-
-					];
+				xwayland = {
+					enable = true;
+				};
+				systemd = {
+					enable = false;
+				};
+				settings = {
 					monitor = [
 						"eDP-1, 1920x1080@165, 0x0, 1"
 						", preferred, auto, 1"
@@ -91,16 +140,16 @@
 						"float, class:.*"
 						"suppressevent maximize, class:.*"
 					];
+					"$leader" = "super";
+					"$terminal" = "kitty";
+					"$filemanager" = "nautilus";
+					"$taskmanager" = "mission-center";
 					bind = let
 						binding = mod: cmd: key: arg: "${mod}, ${key}, ${cmd}, ${arg}";
 						mvfc = binding leader "movefocus";
 						chws = binding leader "workspace";
 						mvtows = binding "${leader} shift" "movetoworkspace";
 						ws = [1 2 3 4 5 6 7 8 9 0];
-
-						terminal = "kitty";
-						filemanager = "nautilus";
-						taskmanager = "mission-center";
 					in [
 						"${leader}, q, killactive"
 						"${leader}, f, togglefloating"
@@ -117,11 +166,47 @@
 						(mvfc "right" "l")
 					]
 						++ (map (i: chws (if i == 0 then "10" else toString i) (toString i)) ws)
-						++ (map (i: mvtows (if i == 0 then "10" else toString i) (toString i)) ws);
+						++ (map (i: mvtows (if i == 0 then "10" else toString i) (toString i)) ws)
+					;
 					bindm = [
 						"${leader}, mouse:273, resizewindow"
 						"${leader}, mouse:272, movewindow"
 					];
+				};
+			};
+		};
+	};
+	xdg = {
+		configFIle = {
+			"uwsm/env" = let
+				env = [
+					"GTK_THEME=Colloid-Dark-Nord"
+					"XCURSOR_THEME=Nordzy-cursors"
+					"XCURSOR_SIZE=32"
+				];
+			in pkgs.writeText "uwsm-env" ''${lib.concatStringsSep "\nexport " env}'';
+			"uwsm/env-hyprland" = let
+				env = [
+					"AQ_DRM_DEVICE=/dev/dri/card2:/dev/dri/card1"
+					"HYPRCURSOR_THEME=Nordzy-hyprcursors"
+					"HYPRCURSOR_SIZE=32"
+				];
+			in pkgs.writeText "uwsm-env-hyprland" ''${lib.concatStringsSep "\nexport " env}'';
+			"Kvantum/ColloidNord" = {
+				source = "${pkgs.colloid-kde/share/Kvantum/ColloidNord}";
+			};
+			"Kvantum/kvantum.kvconfig" = {
+				source = (pkgs.formats.ini {}).generate "kvantum.kvconfig" {
+					General = {
+						theme = "ColloidNordDark";
+					};
+				};
+			};
+			"qt5ct/qt5ct.conf" = {
+				source = (pkgs.formats.ini {}).generate "qt5ct.conf" {
+					Appearance = {
+						icon_theme = "Colloid-Nord-Dark";
+					};
 				};
 			};
 		};

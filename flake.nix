@@ -1,7 +1,7 @@
 {
 	inputs = {
 		nixpkgs = {
-			url = "github:nixos/nixpkgs/nixpkgs-unstable";
+			url = "github:NixOS/nixpkgs/nixos-unstable;
 		};
 		home-manager = {
 			url = "github:nix-community/home-manager";
@@ -33,20 +33,20 @@
 		self,
 		nixpkgs,
 		home-manager,
+		variables,
 		...
-	}: let
+	}:let
 		variables = {
 			system = {
-				architecture = "x86_64-linux";
 				version = "24.11";
 				hostname = "nixos";
 			};
-			users = {
-				administrator = {
+			account = {
+				eric = {
 					name = "eric";
 					git = {
-						email = "ericragnarsen@gmail.com";
 						username = "EricRagnarsen";
+						email = "ericragnarsen@gmail.com";
 					};
 				};
 			};
@@ -54,12 +54,11 @@
 	in {
 		nixosConfigurations = {
 			${variables.system.hostname} = nixpkgs.lib.nixosSystem {
-				system = variables.system.architecture;
 				specialArgs = {
 					inherit inputs variables;
 				};
 				modules = [
-					./nixos/nixos.nix
+					./config/system.nix
 					home-manager.nixosModules.home-manager
 				];
 			};

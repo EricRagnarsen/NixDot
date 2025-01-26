@@ -3,10 +3,7 @@
 	...
 }: {
 	imports = [
-		./windowmanager/hyprland.nix
-		./programs/kitty.nix
-		./programs/nixvim.nix
-		./utilities/git.nix
+		./components
 	];
 	programs = {
 		home-manager = {
