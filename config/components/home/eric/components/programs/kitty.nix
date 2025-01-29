@@ -5,7 +5,7 @@
 	programs = {
 		kitty = {
 			enable = true;
-			theme = "Nord";
+			themeFile = "Nord";
 			font = {
 				name = "FiraCode Nerd Font";
 				package = pkgs.nerd-fonts.fira-code;

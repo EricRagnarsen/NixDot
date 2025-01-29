@@ -6,20 +6,15 @@
 		fish = {
 			enable = true;
 			function = {
-				uwsm-greeter = {
-					onEvent = "tty";
-					body =
-						''
-							if test "$TTY" = "/dev/tty1"
-								if uwsm check may-start and uwsm select
-									exec systemd-cat -t uwsm_start uwsm start default
-								end
-							end
-						''
-					;
-				};
+				uwsm_init = ''
+					if test "$TTY" = "/dev/tty1"
+						if uwsm check may-start and uwsm select
+							exec systemd-cat -t uwsm_start uwsm start default
+						end
+					end
+				'';
 			};
-			interactiveShellInit = "uwsm-greeter";
+			interactiveShellInit = "uwsm_init";
 			plugins = [
 				{
 					name = "pure";

@@ -178,20 +178,20 @@
 	};
 	xdg = {
 		configFIle = {
-			"uwsm/env" = let
-				env = [
-					"GTK_THEME=Colloid-Dark-Nord"
-					"XCURSOR_THEME=Nordzy-cursors"
-					"XCURSOR_SIZE=32"
-				];
-			in pkgs.writeText "uwsm-env" ''${lib.concatStringsSep "\nexport " env}'';
-			"uwsm/env-hyprland" = let
-				env = [
-					"AQ_DRM_DEVICE=/dev/dri/card2:/dev/dri/card1"
-					"HYPRCURSOR_THEME=Nordzy-hyprcursors"
-					"HYPRCURSOR_SIZE=32"
-				];
-			in pkgs.writeText "uwsm-env-hyprland" ''${lib.concatStringsSep "\nexport " env}'';
+			"uwsm/env" = {
+				text = ''
+					export GTK_THEME=Colloid-Dark-Nord
+					export XCURSOR_THEME=Nordzy-cursors
+					export XCURSOR_SIZE=32
+				'';
+			};
+			"uwsm/env-hyprland" = {
+				text = ''
+					export AQ_DRM_DEVICE="/dev/dri/card2:/dev/dri/card1"
+					export HYPRCURSOR_THEME=Nordzy-hyprcursors
+					export HYPRCURSOR_SIZE=32
+				'';
+			};
 			"Kvantum/ColloidNord" = {
 				source = "${pkgs.colloid-kde/share/Kvantum/ColloidNord}";
 			};
