@@ -5,10 +5,10 @@
 	programs = {
 		kitty = {
 			enable = true;
-			themeFile = "Nord";
+			themeFile = "Tokyo_Night_Storm";
 			font = {
-				name = "FiraCode Nerd Font";
-				package = pkgs.nerd-fonts.fira-code;
+				name = "RobotoMono Nerd Font";
+				package = pkgs.nerd-fonts.roboto-mono;
 				size = 11;
 			};
 			settings = {

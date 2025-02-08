@@ -58,7 +58,7 @@
 				};
 			};
 			scripts = with pkgs.mpvScripts; [
-				builtins.autoload
+				autoload
 				modernx
 				thumbfast
 				quack

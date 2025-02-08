@@ -4,7 +4,7 @@
 }: {
 	users = {
 		groups = {
-			administrators= {};
+			administrator= {};
 			user = {};
 		};
 		users = {

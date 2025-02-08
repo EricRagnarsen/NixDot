@@ -5,7 +5,7 @@
 	programs = {
 		fish = {
 			enable = true;
-			function = {
+			functions = {
 				uwsm_init = ''
 					if test "$TTY" = "/dev/tty1"
 						if uwsm check may-start and uwsm select
@@ -29,7 +29,7 @@
 					name = "transient";
 					src = pkgs.fetchFromGitHub {
 						owner = "zzhaolei";
-						repo "transient.fish";
+						repo = "transient.fish";
 						rev = "883a1ec3c0163883d56db38b2b58579e2a5b9739";
 						sha256 = "0jw3h5dxy3k2jbl6w0y8v1plwi8h8l6509dmmjwy425jpmdyvsc2";
 					};

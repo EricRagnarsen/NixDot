@@ -1,4 +1,6 @@
 {
+	inputs,
+	pkgs,
 	...
 }: {
 	nix = {
@@ -7,6 +9,22 @@
 			trusted-public-keys = [
 				"hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
 			];
+		};
+	};
+	fonts = {
+		fontconfig = {
+			enable = true;
+			defaultFonts = {
+				serif = [
+					"Noto Serif"
+				];
+				sansSerif = [
+					"Noto Sans"
+				];
+				monospace = [
+					"Noto Color Emoji"
+				];
+			};
 		};
 	};
 	xdg = {
@@ -20,13 +38,9 @@
 	programs = {
 		uwsm = {
 			enable = true;
-			waylandCompositors = {
-				hyprland = {
-					prettyName = "Hyprland";
-					comment = "Hyprland compositor";
-					binPath = "/run/current-system/sw/bin/Hyprland";
-				};
-			};
+		};
+		dconf = {
+			enable = true;
 		};
 		hyprland = {
 			enable = true;
@@ -43,15 +57,6 @@
 			noto-fonts
 			noto-fonts-cjk-sans
 			noto-fonts-color-emoji
-			nerd-fonts.fira-code
-			mission-center
-			nautilus
-			nautilus-open-any-terminal
-			wl-clipboard
-			kitty
-			imv
-			mpv
-			firefox
 		];
 	};
 	security = {

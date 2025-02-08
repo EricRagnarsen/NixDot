@@ -39,7 +39,6 @@
 				};
 				imports = [
 					./components/home/eric
-					inputs.nixvim.homeManagerModules.nixvim
 				];
 			};
 		};
